@@ -4,6 +4,7 @@
 import scrapy
 import re
 from .meal import Meal
+from .mealdate import MealDate
 from .db import DB
 
 class Wueins(scrapy.Spider):
@@ -17,9 +18,16 @@ class Wueins(scrapy.Spider):
         mealdate_id = 0
         for t in tables:
             title = t.xpath('thead/tr/th').css('.text::text').extract()
-            print(title[0])
+
+            # get date text
+            date_name = "empty date"
+            if len(title):
+                date_name = title[0]
+
             meals = t.xpath('tbody/tr')
             meal_id = 0
+            md = MealDate(catering_id, mealdate_id, date_name)
+            md.save(db)
             for m in meals:
                 meal_name = m.xpath('td').css('.text').xpath('a/text()').extract()
                 meal_price = m.xpath('td').css('.preise').xpath('a/text()').extract()
@@ -34,7 +42,6 @@ class Wueins(scrapy.Spider):
                         prices[i] = match.group(0) + "€"
 
                 m = Meal(catering_id, mealdate_id, meal_id, name, str(prices[0]), str(prices[1]))
-                print(m)
                 m.save(db)
 
                 meal_id += 1
