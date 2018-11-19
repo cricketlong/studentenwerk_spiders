@@ -15,7 +15,7 @@ class Wueins(scrapy.Spider):
     def parse(self, response):
         tables = response.xpath('//div[@id="spalterechtsnebenmenue"]/table').css('.speiseplan')
         db = DB()
-        catering_id = 0
+        canteen_id = 0
         for t in tables:
             title = t.xpath('thead/tr/th').css('.text::text').extract()
 
@@ -37,7 +37,7 @@ class Wueins(scrapy.Spider):
             meals = t.xpath('tbody/tr')
             mealdate_id = int(date_obj.strftime("%Y%m%d"))
             meal_id = 0
-            md = MealDate(catering_id, mealdate_id, date_name)
+            md = MealDate(canteen_id, mealdate_id, date_name)
             md.save(db)
             for m in meals:
                 meal_name = m.xpath('td').css('.text').xpath('a/text()').extract()
@@ -52,8 +52,8 @@ class Wueins(scrapy.Spider):
                         match = re.search('\d+,\d+', prices[i])
                         prices[i] = match.group(0) + "€"
 
-                m = Meal(catering_id, mealdate_id, meal_id, name, str(prices[0]), str(prices[1]))
-                # m.save(db)
+                m = Meal(canteen_id, mealdate_id, meal_id, name, str(prices[0]), str(prices[1]))
+                m.save(db)
 
                 meal_id += 1
             mealdate_id += 1
