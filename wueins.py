@@ -10,7 +10,9 @@ from .db import DB
 
 class Wueins(scrapy.Spider):
     name = 'wueins'
-    start_urls = ['https://www.studentenwerk-dresden.de/mensen/speiseplan/mensa-wueins.html']
+    start_urls = ['https://www.studentenwerk-dresden.de/mensen/speiseplan/mensa-wueins.html',
+                  'https://www.studentenwerk-dresden.de/mensen/speiseplan/mensa-wueins-w1.html',
+                  'https://www.studentenwerk-dresden.de/mensen/speiseplan/mensa-wueins-w2.html']
 
     def parse(self, response):
         tables = response.xpath('//div[@id="spalterechtsnebenmenue"]/table').css('.speiseplan')
